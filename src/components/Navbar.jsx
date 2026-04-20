@@ -1,15 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 
-function Navbar() {
-  const [active, setActive] = useState(0);
+function Navbar({ activeTab, setActiveTab }) {
   const [indicatorStyle, setIndicatorStyle] = useState({ width: 0, left: 0 });
   const buttonsRef = useRef([]);
 
   const links = ["Ordonnancement", "Dates au plus tot", "Dates au plus tard", "Chemin critique"];
 
   const updateIndicator = () => {
-    if (buttonsRef.current[active]) {
-      const button = buttonsRef.current[active];
+    if (buttonsRef.current[activeTab]) {
+      const button = buttonsRef.current[activeTab];
       setIndicatorStyle({
         width: button.offsetWidth,
         left: button.offsetLeft,
@@ -19,8 +18,10 @@ function Navbar() {
 
   useEffect(() => {
     updateIndicator();
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active]);
+  }, [activeTab]);
 
   return (
     <div className="w-full flex justify-center mt-6">
@@ -39,9 +40,9 @@ function Navbar() {
           <button
             key={index}
             ref={(el) => (buttonsRef.current[index] = el)}
-            onClick={() => setActive(index)}
+            onClick={() => setActiveTab(index)}
             className={`relative z-10 px-6 py-2 rounded-full text-sm font-medium transition-colors duration-300 whitespace-nowrap ${
-              active === index ? "text-white" : "text-gray-600"
+              activeTab === index ? "text-white" : "text-gray-600"
             }`}
           >
             {link}

@@ -9,16 +9,16 @@ import { useState } from 'react'
 function App() {
 
   const tasks = [
-    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v"
+    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w"
   ];
 
   const durees = [
-    7,7,15,30,45,15,45,60,20,30,30,15,30,15,30,15,15,15,30,7,4,2
+    7,7,15,30,45,15,45,60,20,30,30,15,30,15,30,15,15,15,30,7,4,2,7
   ];
 
   const antecedents = [
     "-", "a", "b", "c", "d", "e", "d", "d", "h", "i", "f", "k",
-    "g j l", "m", "n", "m", "o", "q", "q", "p", "r t", "s t"
+    "g j l", "m", "n", "m", "o", "q", "q", "p", "r t", "s t", "r s"
   ];
 
   // Fonction pour parser les antécédents
@@ -56,32 +56,49 @@ function App() {
     setFinProjet(fin);
   };
 
+  // État pour la navigation
+  const [activeTab, setActiveTab] = useState(0);
+
   return (
     <>
-      <Navbar />
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      {/* Ordonnancement - toujours affiché */}
       <Ordonnancement 
         tasks={tasks} 
         durees={durees} 
         antecedents={antecedents} 
       />
-      <Dateplustot 
-        tasks={tasks} 
-        durees={durees} 
-        antecedents={antecedents}
-        onFinProjet={handleFinProjet}
-      />
-      <Dateplustard 
-        tasks={tasks} 
-        durees={durees} 
-        successeurs={successeurs}
-        finProjet={finProjet}
-      />
-      <Chemincritique 
-        tasks={tasks} 
-        durees={durees} 
-        antecedents={antecedents}
-        finProjet={finProjet}
-      />
+      
+      {/* Dates au plus tot - affiché quand activeTab = 1 */}
+      {(activeTab === 1) && (
+        <Dateplustot 
+          tasks={tasks} 
+          durees={durees} 
+          antecedents={antecedents}
+          onFinProjet={handleFinProjet}
+        />
+      )}
+      
+      {/* Dates au plus tard - affiché quand activeTab = 2 */}
+      {(activeTab === 2) && (
+        <Dateplustard 
+          tasks={tasks} 
+          durees={durees} 
+          successeurs={successeurs}
+          finProjet={finProjet}
+        />
+      )}
+      
+      {/* Chemin critique - affiché quand activeTab = 3 */}
+      {(activeTab === 3) && (
+        <Chemincritique 
+          tasks={tasks} 
+          durees={durees} 
+          antecedents={antecedents}
+          finProjet={finProjet}
+        />
+      )}
     </>
   )
 }
